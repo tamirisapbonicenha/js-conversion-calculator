@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calculadora de Conversão de Bases Numéricas</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <section class="wrapper">
+
+        <h1>Calculadora de Conversão de Bases Numéricas</h1>
+
+        <div class="col">
+            <h3>Digite o número</h3>
+            <input type="text" class="number" id="number">
+        </div>
+
+        <div class="col">
+            <h3>Na base</h3>
+            <input type="text" class="base" id="base">
+        </div>
+
+        <div>
+            <h3>Escolha a base para converter</h3>
+            <input type="radio" value="2" name="bases">2</input>
+            <input type="radio" value="5" name="bases">5</input>
+            <input type="radio" value="8" name="bases">8</input>
+            <input type="radio" value="10" name="bases">10</input>
+            <input type="radio" value="16" name="bases">16</input>
+        </div>
+
+        <input type="submit" value="Converter" class="conversor" id="conversor">
+
+        <p class="result" id="result"></p>
+    </section>
+
+    <script>
+
+        var el = document.getElementById('conversor');
+        var res = document.getElementById('result');
+
+        // Decimal para qualquer base
+        function decToAny(number, baseConverter) {
+            var binario = [];
+            var decimal = number;
+
+            while(decimal >= 1) {
+                var result = decimal % baseConverter;
+                switch(result) {
+                    case 10:
+                        result = 'A';
+                        break;
+                    case 11:
+                        result = 'B';
+                        break;
+                    case 12:
+                        result = 'C';
+                        break;
+                    case 13:
+                        result = 'D';
+                        break;
+                    case 14:
+                        result = 'E';
+                        break;
+                    case 15:
+                        result = 'F';
+                        break;
+                    case 15:
+                        result = 'G';
+                        break;
+                    default:
+                        result = decimal % baseConverter;
+                }
+
+                binario.push(result);
+                decimal = Math.floor(decimal / baseConverter);
+            }
+
+            binario.reverse();
+            var str = binario.join('')
+
+            res.innerHTML = str;
+        }
+
+        // Qualquer base para decimal
+        function baseToDec(number, base, baseC) {
+            var binario = number;
+            var array = binario.split('');
+            array.reverse();
+            var decimal = 0;
+
+            for(var i = 0; array.length > i; i++) {
+                console.log(array[i]);
+                switch(array[i]) {
+                    case 'A':
+                        array[i] = 10;
+                        break;
+                    case 'B':
+                        array[i] = 11;
+                        break;
+                    case 'C':
+                        array[i] = 12;
+                        console.log('a')
+                        break;
+                    case 'D':
+                        array[i] = 13;
+                        break;
+                    case 'E':
+                        array[i] = 14;
+                        break;
+                    case 'F':
+                        array[i] = 15;
+                        break;
+                    case 'G':
+                        array[i] = 16;
+                        break;
+                    default:
+                        array[i] = array[i];
+                }
+                var exp = Math.pow(base, i);
+                var multiply = array[i] * exp;
+                decimal = decimal + multiply;
+            }
+
+            console.log(decimal)
+
+            decToAny(decimal, baseC);
+        }
+
+        el.onclick = function() {
+            var getNumber = document.getElementById('number').value;
+            var getBase = document.getElementById('base').value;
+            var bases = document.getElementsByName('bases');
+
+            for(var i = 0; i < bases.length; i++) {
+                if (bases[i].checked) {
+                    var baseConversor = bases[i].value;
+                    break;
+                }
+            }
+
+            if ( getBase == 10 ) {
+                decToAny(getNumber, baseConversor);
+            } else {
+                baseToDec(getNumber, getBase, baseConversor)
+            }
+        };
+
+    </script>
+</body>
+</html>
+
