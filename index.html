@@ -9,26 +9,39 @@
 <body>
 
     <section class="wrapper">
-
         <h1>Calculadora de Conversão de Bases Numéricas</h1>
 
         <div class="col">
-            <h3>Digite o número</h3>
+            <h3>Converter:</h3>
             <input type="text" class="number" id="number">
         </div>
 
         <div class="col">
-            <h3>Na base</h3>
-            <input type="text" class="base" id="base">
+            <h3>De:</h3>
+            <div class="select-style">
+                <select id="baseFrom">
+                    <option value="2">Binário (2)</option>
+                    <option value="3">(3)</option>
+                    <option value="5">(5)</option>
+                    <option value="8">Octal (8)</option>
+                    <option value="10">Decimal (10)</option>
+                    <option value="16">Hexadecimal (16)</option>
+                </select>
+            </div>
         </div>
 
-        <div>
-            <h3>Escolha a base para converter</h3>
-            <input type="radio" value="2" name="bases">2</input>
-            <input type="radio" value="5" name="bases">5</input>
-            <input type="radio" value="8" name="bases">8</input>
-            <input type="radio" value="10" name="bases">10</input>
-            <input type="radio" value="16" name="bases">16</input>
+        <div class="col">
+            <h3>Para:</h3>
+            <div class="select-style">
+                <select id="baseTo">
+                    <option value="2">Binário (2)</option>
+                    <option value="3">(3)</option>
+                    <option value="5">(5)</option>
+                    <option value="8">Octal (8)</option>
+                    <option value="10">Decimal (10)</option>
+                    <option value="16">Hexadecimal (16)</option>
+                </select>
+            </div>
         </div>
 
         <input type="submit" value="Converter" class="conversor" id="conversor">
@@ -38,61 +51,76 @@
 
     <script>
 
-        var el = document.getElementById('conversor');
-        var res = document.getElementById('result');
+        // Variáveis globais
+        var el = document.getElementById('conversor'); // Botão converter
+        var res = document.getElementById('result'); // Local/Tag na tela onde vai ser impresso o resultado
 
         // Decimal para qualquer base
+        // A função decToAny recebe dois paramêtros, number que é número SEMPRE decimal e a base para conversão
         function decToAny(number, baseConverter) {
-            var binario = [];
-            var decimal = number;
+            var numConvert = []; // Cria um array vazio
+            var decimal = number; // A variável decimal recebe number que é um paramêtro da função
 
+            // Enquanto o decimal for maior ou igual a 1, continuar a divisão
             while(decimal >= 1) {
-                var result = decimal % baseConverter;
-                switch(result) {
+                // Criação de uma variável mod para colocar o mod de decimal / baseConverter. baseConverter é o paramêtro da função que corresponde a base para ser convertida
+                var mod = decimal % baseConverter;
+
+                // Switch para o tratamento de números hexadecimais
+                switch(mod) {
                     case 10:
-                        result = 'A';
+                        mod = 'A';
                         break;
                     case 11:
-                        result = 'B';
+                        mod = 'B';
                         break;
                     case 12:
-                        result = 'C';
+                        mod = 'C';
                         break;
                     case 13:
-                        result = 'D';
+                        mod = 'D';
                         break;
                     case 14:
-                        result = 'E';
+                        mod = 'E';
                         break;
                     case 15:
-                        result = 'F';
+                        mod = 'F';
                         break;
                     case 15:
-                        result = 'G';
+                        mod = 'G';
                         break;
                     default:
-                        result = decimal % baseConverter;
+                        mod = decimal % baseConverter; // O default vai ser mod recebe o mod de decimal / baseConverter
                 }
 
-                binario.push(result);
+                // Adicionando o resto da divisão no array vazio que criamos acima.
+                numConvert.push(mod);
+
+                // Decimal agora vai ser dividido pelo baseConverter. O Math.floor arredonda a divisão para o menor número inteiro mais próximo e retorna esse número. Ex: 5/2 = 2,5 --> Math.floor(5/2) = 2
                 decimal = Math.floor(decimal / baseConverter);
             }
 
-            binario.reverse();
-            var str = binario.join('')
+            // Invertendo os números que colocammos dentro do array numConvert
+            numConvert.reverse();
+            var str = numConvert.join('') // Transformando array em string
 
-            res.innerHTML = str;
+            res.innerHTML = str; // Imprimindo na tela
         }
 
         // Qualquer base para decimal
+        // A função baseToDec recebe três paramêtros, number que é um número NUNCA decimal, a sua base e a base para conversão
         function baseToDec(number, base, baseC) {
-            var binario = number;
-            var array = binario.split('');
-            array.reverse();
-            var decimal = 0;
+            var currentNum = number; // currentNum recebe o número
 
+            var array = currentNum.split(''); // array recebe o currentNum que é dividido em um array
+
+            array.reverse(); // invertendo o array para facilitar o cálculo
+
+            var decimal = 0; // Criação de uma variável decimal
+
+            // For para percorrer cada dígito, checar se existem caracteres que correspondem ao hexadecimal e fazer os cálculos
             for(var i = 0; array.length > i; i++) {
-                console.log(array[i]);
+                // Switch para o tratamento de números hexadecimais
                 switch(array[i]) {
                     case 'A':
                         array[i] = 10;
@@ -117,38 +145,105 @@
                         array[i] = 16;
                         break;
                     default:
-                        array[i] = array[i];
+                        array[i] = array[i]; // Caso ele não encontre nenhuma ocorrência, o dígito corresponde a ele mesmo
                 }
+
+                // Criação de uma variável para guardar a exponenciação do dígito. Base é a base do número, e i é quanto ele vai valer nesse momento no for
+                // Math.pow função embutida no js que toma um número e um expoente
                 var exp = Math.pow(base, i);
+
+                // Criação de uma variável para guardar a multiplicação do número em questão nesse momento dentro do for pelo resultado da exponenciação
                 var multiply = array[i] * exp;
+
+                // Decimal receber decimal + o resultado da multiplicação. Ps: Decimal é uma fora do for, o resultado aqui, vai somando lá onde ela foi declarada.
                 decimal = decimal + multiply;
             }
 
-            console.log(decimal)
-
-            decToAny(decimal, baseC);
+            decToAny(decimal, baseC); // Chamar função para conversão do decimal obtido aqui, passando o número decimal e a base para conversão
         }
 
+        // Função de click no botão. Pega o número, sua base e a base para converter, compara se a base from é 10, se for, já chama a função decToAny, senão, chama a função baseToDec
         el.onclick = function() {
             var getNumber = document.getElementById('number').value;
-            var getBase = document.getElementById('base').value;
-            var bases = document.getElementsByName('bases');
+            var baseFrom = document.getElementById('baseFrom').options[document.getElementById('baseFrom').selectedIndex].value;
+            var baseTo = document.getElementById('baseTo').options[document.getElementById('baseTo').selectedIndex].value;
 
-            for(var i = 0; i < bases.length; i++) {
-                if (bases[i].checked) {
-                    var baseConversor = bases[i].value;
-                    break;
-                }
-            }
-
-            if ( getBase == 10 ) {
-                decToAny(getNumber, baseConversor);
+            if ( baseFrom == 10 ) {
+                decToAny(getNumber, baseTo);
             } else {
-                baseToDec(getNumber, getBase, baseConversor)
+                baseToDec(getNumber, baseFrom, baseTo)
             }
         };
 
+
+
+        /* --------------------------------------------------------
+            MÁSCARAS E VALIDAÇÕES
+        -------------------------------------------------------- */
+        var inputText = document.getElementById('number');
+        var regexGlobal = /[0-1]|\./;
+
+        inputText.onkeypress = function() {
+            validateNumber(event, regexGlobal);
+        }
+
+        var select = document.getElementById('baseFrom')
+        select.addEventListener("change", function() {
+            var value = select.options[select.selectedIndex].value;
+            document.getElementById('number').value = '';
+            switch(value) {
+                case '2':
+                    var regexGlobal = /[0-1]|\./;
+                    inputText.onkeypress = function() {
+                        validateNumber(event, regexGlobal);
+                    }
+                    break;
+                case '3':
+                    var regexGlobal = /[0-2]|\./;
+                    inputText.onkeypress = function() {
+                        validateNumber(event, regexGlobal);
+                    }
+                    break;
+                case '5':
+                    var regexGlobal = /[0-4]|\./;
+                    inputText.onkeypress = function() {
+                        validateNumber(event, regexGlobal);
+                    }
+                    break;
+                case '8':
+                    var regexGlobal = /[0-7]|\./;
+                    inputText.onkeypress = function() {
+                        validateNumber(event, regexGlobal);
+                    }
+                    break;
+                case '10':
+                   var regexGlobal = /[0-9]|\./;
+                    inputText.onkeypress = function() {
+                        validateNumber(event, regexGlobal);
+                    }
+                    break;
+                case '16':
+                    var regexGlobal = /[0-9a-f]+/i;
+                    inputText.onkeypress = function() {
+                        validateNumber(event, regexGlobal);
+                    }
+                    break;
+            }
+        });
+
+        function validateNumber(evt, regex) {
+            var theEvent = evt || window.event;
+            var key = theEvent.keyCode || theEvent.which;
+            key = String.fromCharCode(key);
+            var regex = regex;
+            if( !regex.test(key) ) {
+                theEvent.returnValue = false;
+                if(theEvent.preventDefault) theEvent.preventDefault();
+            }
+        }
+
     </script>
+
 </body>
 </html>
 
